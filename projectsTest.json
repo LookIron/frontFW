@@ -1,0 +1,18 @@
+[
+	  		{
+	  			name: "Organizar escritorio",
+	  			category: "laboral"
+	  		 },
+	  		{
+	  			name: "Requerimientos",
+	  			category: "WebP"
+	  		 },
+	  		{
+	  			name: "Pagar servicios",
+	  			category: "personal"
+	  		 },
+			{
+				name: "Preparar proyecto", 
+				category: "WebP"
+			}
+	 	]
