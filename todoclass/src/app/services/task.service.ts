@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, 
 	AngularFirestoreDocument } from 'angularfire2/firestore';
-
+import { Task } from '../models/task';
 import { Observable } from 'rxjs/Observable';
-import { Task } from  '../models/task';
-
-
 
 @Injectable()
 export class TaskService {
-	taskCollection: AngularFirestoreCollection<Task>; 
-	taskDocument: AngularFirestoreDocument<Task>;
+	taskCollection: AngularFirestoreCollection<Task>;
 	tasks: Observable<Task[]>;
+	//tasks: Task[]; 
+	taskDoc: AngularFirestoreDocument<Task>;
 
 
-  constructor(db: AngularFirestore) {
-  	this.taskCollection = db.collection('tasks');
-    this.tasks = this.taskCollection.valueChanges();
+  constructor(public db:AngularFirestore) { 
+  	this.taskCollection = this.db.collection('tasks');
+  //	this.tasks = this.taskCollection.valueChanges(); 
+          this.tasks = this.taskCollection.snapshotChanges()
+            .map(tasks => {
+             //   this.countItems = actions.length;
+                return tasks.map(task => ({ id: task.payload.doc.id, name: task.payload.doc.get("name"), category: task.payload.doc.get("category") }));
+            });
   }
 
   getTasks(){
@@ -27,9 +30,9 @@ export class TaskService {
   	this.taskCollection.add(task);
   }
 
-  delTask(task: Task){
-  	    return this.taskCollection.doc(task.$key);
-
+  deleteTask(task: Task){
+  	let url = "tasks/"+task.id; 
+  	this.taskDoc = this.db.doc(url);
+  	this.taskDoc.delete();
   }
-
 }
