@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from  '../../models/task';
+import { TaskService } from  '../../services/task.service';
 
 @Component({
   selector: 'app-task',
@@ -12,11 +13,11 @@ export class TaskComponent implements OnInit {
 	tasks:Task[];
 	task:Task;
 
-  constructor() { 
+  constructor(public taskService: TaskService) { 
   	this.owner = "Leonardo Busta";
   //	this.tasks = [];
-  	this.task = {"name": "", "category": ""};
- 		this.tasks =[
+		this.task = { "id":"", "category": "", "name": "" };
+ /*		this.tasks =[
 									{
 										"name": "Organizar escritorio",
 										"category": "laboral"
@@ -34,28 +35,42 @@ export class TaskComponent implements OnInit {
 										"category": "WebP"
 									}
 								];
-  }
+  */
+}
 
   ngOnInit() {
 
+  	this.taskService.getTasks().subscribe((tasks)=>
+  		console.log(tasks)
+  		//this.tasks = tasks
+  		  );
   }
 
   onAddTask() {
-  	let task1:Task;
+  /*	let task:Task;
 
-/*  	task1.category = this.task.category;
-  	task1.name = this.task.name;
-*/
-		task1 = {
+
+		task = {
 			"category": this.task.category,
 			"name": this.task.name
 		}
+*/
+		this.taskService.addTask(this.task);
 
-  	this.tasks.push(task1);
+		this.task = { "id":"", "category": "", "name": "" };
+
+
+ // 	this.tasks.push(task);
+
 
   }
 
-  delTask(e, task:Task){
+  delTask(e, task:Task){   
+
+    let index = this.tasks.findIndex( 
+    	(taskM) => {return(taskM.name === task.name)} );
+    this.tasks.splice(index,1);
+
 
   	console.log(task);
   }
